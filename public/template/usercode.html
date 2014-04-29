@@ -1,0 +1,26 @@
+<div class="panel panel-default" ng-show="showcode" style="position: absolute;width:225px;">
+    <ul class="list-group">
+        <li class="list-group-item">
+            <div class="row">
+                <div class="col-xs-4">
+                    <img class="img-rounded" width="50" height="50"
+                         ng-src='{{user.isCustomLogo ? "/logo/"+user.nickname : "http://www.gravatar.com/avatar/"+user.logo}}'/>
+                </div>
+                <div class="col-xs-8">
+                    <p><a href="/user?id={{user.id}}">{{user.nickname}}</a></p>
+
+                    <p>{{user.fraction}}</p>
+                </div>
+            </div>
+        </li>
+        <li class="list-group-item small" ng-show="loginUser && loginUser.id !== user.id">
+            <i class="glyphicon glyphicon-envelope"></i> <a ng-click="sendMessage()" href="">私信TA</a>
+                <span ng-show="hasFollow()">
+                    @ <a href="" ng-click="unfollow()">取消关注TA</a>
+                </span>
+                <span ng-show="!hasFollow()">
+                    @ <a href="" ng-click="follow()">关注TA</a>
+                </span>
+            <!--i class="glyphicon glyphicon-hand-right"></i> <a href="">投诉TA</a--></li>
+    </ul>
+</div>

@@ -1,0 +1,98 @@
+<% include header.html %>
+
+<div class="panel panel-info" ng-controller="column_page_ctrl">
+    <div class="panel-heading"> <%=column.name%> <a ng-show="loginUser" href="#createTopic" class="btn btn-default btn-xs pull-right">发表新帖</a></div>
+    <ul class="list-group">
+        <% topics.forEach(function(topic,index){ %>
+        <li class="list-group-item">
+
+            <div class="row">
+                <div class="col-xs-8 col-md-9 col-lg-9">
+                    <div class="label" style="line-height:15px;display:inline-block;width: 60px;background: #eee;color: #888"> <%=topic.replyNum%> </div>
+                    <a  href="/topic?id=<%=topic.id%>" ng-non-bindable><span style="font-size: 1.1em; padding:8px;"><%=topic.title%> </span></a>
+                    <%if(topic.top){%>
+                    <img src="/zding.gif"/>
+                    <%}%>
+                </div>
+                <div class="col-xs-4 col-md-3 col-lg-3">
+                    <div style="font-size: 0.6em ; padding-left: 15px">
+                        <p>
+                            <i class="small glyphicon glyphicon-user" style="opacity: .2"></i> <a usercode user-id="<%=topic.authorId%>" href="/user?id=<%=topic.authorId%>">
+                                <%=topicsInfo[index].topicAuthor.nickname %>
+                            </a>
+                        </p>
+
+                        <p>
+
+                            <%if(topicsInfo[index].newReply){%>
+                                <i style="opacity: .2" class="small glyphicon glyphicon-comment"></i>
+                                <a usercode user-id="<%=topicsInfo[index].replyAuthor.id%>" href="/user?id=<%=topicsInfo[index].replyAuthor.id%>">
+                                    <%=topicsInfo[index].replyAuthor.nickname%>
+                                </a>
+                                <span style="opacity: .5" class="pull-right">
+                                    {{<%=topicsInfo[index].newReply.createTime%> | time}}
+                                </span>
+                            <%}else{%>
+                               <i style="opacity: .2" class="small glyphicon glyphicon-user"></i><a  usercode user-id="<%=topic.authorId%>" href="/user?id=<%=topic.authorId%>">
+                            <%=topicsInfo[index].topicAuthor.nickname %>
+                                </a>
+                                 <span style="opacity: .5" class="pull-right">
+                                    {{<%=topic.createTime%> | time}}
+                                </span>
+                            <%}%>
+
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+
+        </li>
+        <% }) %>
+        <li class="list-group-item">
+        <%include pager.html%>
+    </li>
+    <div role="form" id="createTopic" ng-show="loginUser" style="padding:50px">
+        <input type="hidden" ng-init='columnId="<%=column.id%>"'/>
+
+        <div class="form-group">
+            <div class="alert alert-danger small" ng-show="errors.title">
+                {{errors.title[0]}}
+            </div>
+            <input type="text" class="form-control" ng-keydown="tab()" ng-model="title" tabindex="1"
+                   placeholder="主题标题">
+        </div>
+        <div class="form-group">
+            <div class="alert alert-danger small" ng-show="errors.body">
+                {{errors.body[0]}}
+            </div>
+            <div editor content="body"></div>
+        </div>
+        <div class="form-group">
+            <div class="alert alert-danger small" ng-show="errors.validat_num">
+                {{errors.validat_num[0]}}
+            </div>
+            <div class="row">
+                <div class="col-sm-7">
+                    <input type="text" class="form-control" ng-keydown="tab()" ng-model="validat_num" tabindex="3"
+                           placeholder="输入验证码，不区分大小写。">
+                </div>
+                <label class="col-sm-5 control-label"><img ng-src="/refresh_num?{{time}}" width="60" height="25"/>
+                    <a href="" ng-click="refreshNum()"><span class="glyphicon glyphicon-repeat"></span></a></label>
+            </div>
+        </div>
+        <button type="button" ng-click="createTopic()" tabindex="5" class="btn btn-primary">创建主题</button>
+    </div>
+
+</div>
+
+<script src="/js/marked.js"></script>
+<script src="/js/angular-file-upload-shim.min.js"></script>
+<script src="/js/angular.min.js"></script>
+<script src="/js/angular-file-upload.min.js"></script>
+<script src="/js/ui-bootstrap-tpls.min.js"></script>
+
+<script src="/js/share.js"></script>
+<script src="/js/column_page_ctrl.js"></script>
+
+<% include footer.html %>

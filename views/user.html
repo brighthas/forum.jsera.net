@@ -1,0 +1,209 @@
+<% include header.html %>
+
+<div ng-controller="userCtrl" ng-init="userId='<%=user.id%>'">
+    <tabset>
+        <tab heading="基本资料" active="'info'===targetTag">
+            <table class="table table-striped">
+                <tr>
+                    <td>头像</td>
+                    <td>
+                        <div style="position: relative">
+                            <img class="img-rounded" style="cursor:pointer;" width="100" height="100"
+                                 ng-src='{{user.isCustomLogo ? "/logo/<%=user.nickname%>" : "http://www.gravatar.com/avatar/<%=user.logo%>"}}'/>
+                            <%if(loginUser && loginUser.id === user.id){%>
+                            <i ng-show="user.isCustomLogo" class="glyphicon glyphicon-circle-arrow-up" style="cursor:pointer;font-size:2em;position: absolute; top:40px;left:35px;"></i>
+                            <input tooltip-placement="left" tooltip="点击上传头像" style="cursor:pointer;position: absolute; top:50px;left:10px;filter:alpha(opacity:0);opacity: 0;" ng-show="user.isCustomLogo"  type="file" name="logo" ng-file-select="onFileSelect($files)">
+                        </div>
+
+                        <p></p>
+
+                        <div class="btn-group-xs">
+                            <button type="button" class="btn btn-info" ng-model="user.isCustomLogo" btn-radio="true">
+                                使用自定义头像
+                            </button>
+                            <button type="button" class="btn btn-info" ng-model="user.isCustomLogo" btn-radio="false">
+                                使用Gravatar头像
+                            </button>
+                        </div>
+                        <%}%>
+                    </td>
+
+                </tr>
+                <tr>
+                    <td>昵称</td>
+                    <td>
+                        <div>
+                            <p><%=user.nickname || ""%></p>
+
+                            <div ng-show="userId !== loginUser.id">
+                                <i class="glyphicon glyphicon-envelope"></i>
+
+                                <a ng-click="sendMessage()" href="">私信TA</a>
+
+                                <span ng-show="hasFollow()">
+                                    @ <a href="" ng-click="unfollow()">取消关注TA</a>
+                                </span>
+
+                                <span ng-show="!hasFollow()">
+                                    @ <a href="" ng-click="follow()">关注TA</a>
+                                </span>
+
+                                <i class="glyphicon glyphicon-hand-right"></i>
+                                <a href="">投诉TA</a></li>
+
+                            </div>
+
+                        </div>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td>个人简介</td>
+                    <td>
+                        <%if(loginUser && loginUser.id === user.id){%>
+                        <textarea rows="5" cols="80" ng-show="canEditUser1" type="text" ng-model="user.des" ng-mouseout="updateUser();canEditUser1=false;"></textarea>
+
+                        <p ng-show="!canEditUser1">
+                            {{user.des}}
+                        </p>
+                        <a href=""><i class="glyphicon glyphicon-edit" ng-click="canEditUser1=true"
+                                      ng-show="!canEditUser1"></i></a>
+                        <%}else{%>
+                        <%=user.des%>
+                        <%}%>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td>性别</td>
+                    <td>
+                        <%if(loginUser && loginUser.id === user.id){%>
+
+                        <select ng-selected="user.sex.toString()" ng-change="updateUser();canEditUser2=false;" ng-show="canEditUser2" ng-model="user.sex">
+                            <option value="true">男</option>
+                            <option value="false">女</option>
+                        </select>
+
+                        <p ng-show="!canEditUser2">{{user.sex.toString()==="true"?"男":"女"}}</p>
+                        <a href=""><i class="glyphicon glyphicon-edit" ng-click="canEditUser2=true"
+                                      ng-show="!canEditUser2"></i></a>
+
+                        <%}else{%>
+                        <%=user.sex?"男":"女"%>
+                        <%}%>
+
+
+                    </td>
+                </tr>
+                <tr>
+
+                    <td>身份</td>
+
+                    <td>
+                        <%if(user.role === 0){%>
+                        用户
+                        <%}%>
+                        <%if(user.role === 1){%>
+                        终极管理员
+                        <%}%>
+
+                        <%columnList.forEach(function(col){%>
+                        <%if(col.managerId === user.id){%>
+                        <p><strong><%=col.name%></strong>版主</p>
+                        <%}else{%>
+                        <p ng-show="loginUser.role === 1 && loginUser.id !== userId">
+                            <string><%=col.name%></string>
+                            <a href="" ng-click="setManager('<%=user.id%>','<%=col.id%>')">设置管理员</a></p>
+                        <%}%>
+                        <%})%>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td>所在地</td>
+                    <td>
+                        <%if(loginUser && loginUser.id === user.id){%>
+                        <textarea rows="5" cols="80" ng-show="canEditUser3" ng-mouseout="updateUser();canEditUser3=false;" type="text" ng-model="user.address"></textarea>
+
+                        <p ng-show="!canEditUser3">{{user.address || ""}}</p>
+                        <a href=""><i class="glyphicon glyphicon-edit" ng-click="canEditUser3=true"
+                                      ng-show="!canEditUser3"></i></a>
+                        <%}else{%>
+                        <%=user.address || ""%>
+                        <%}%>
+                    </td>
+                </tr>
+            </table>
+        </tab>
+        <tab heading="主题帖" select="loadTopicList()" active="'topics'===targetTag">
+            <ul class="list-group">
+                <li ng-repeat=" t in topicTitles" class="list-group-item">
+                    <a href="/topic?id={{t.id}}">{{t.title}}</a>
+                </li>
+                <li class="list-group-item">
+                    <pagination on-select-page="selectTopicPage(page)" total-items="bigTotalItems" page="bigCurrentPage"
+                                items-per-page="perPage" class="pagination-sm" boundary-links="true"></pagination>
+                </li>
+            </ul>
+
+        </tab>
+        <tab heading="回复帖" select="loadReplyList()" active="'replys'===targetTag">
+            <ul class="list-group">
+                <li ng-repeat=" r in replys" class="list-group-item">
+                    <a href="/topic?id={{r.topicId}}#{{r.id}}">回复：{{topics[r.topicId].title}}</a>
+                </li>
+                <li class="list-group-item">
+                    <pagination on-select-page="selectReplyPage(page)" total-items="bigTotalItems2"
+                                page="bigCurrentPage2" items-per-page="perPage2" class="pagination-sm"
+                                boundary-links="true"></pagination>
+                </li>
+            </ul>
+        </tab>
+        <%if(loginUser && loginUser.id === user.id){%>
+        <tab heading="私信" select="loadMessageList()" active="'messages'===targetTag">
+            <ul class="list-group">
+                <li ng-repeat="m in messageList" class="list-group-item">
+                    <span>{{m.body}}</span>
+                    <span class="pull-right">{{m.createTime | date:'MM-dd'}}</span>
+                </li>
+            </ul>
+            <button ng-click="loadMessageList()" ng-show="showMessageMoreButton"> 更多</button>
+
+        </tab>
+        <%}%>
+        <%if(loginUser && loginUser.id === user.id){%>
+        <tab heading="动态" select="loadInfoList()" active="'infos'===targetTag">
+            <ul class="list-group">
+                <li ng-repeat="info in infoList" class="list-group-item">
+                    <span ng-bind-html="sce(info.body)"></span><span class="pull-right">{{info.createTime | date:'MM-dd'}}</span>
+                </li>
+            </ul>
+            <button ng-click="loadInfoList()" ng-show="showInfoMoreButton"> 更多</button>
+        </tab>
+        <%}%>
+        <tab heading="关注" active="'follows'===targetTag">
+            <a usercode user-id="{{uid}}" href="/user?id={{uid}}" ng-repeat="uid in user.follows">
+                <img class="img-rounded" style="margin: 5px;" width="40" height="40"
+                     ng-src='{{users[uid].isCustomLogo ? "/logo/"+users[uid].nickname : "http://www.gravatar.com/avatar/"+users[uid].logo}}'/>
+            </a>
+        </tab>
+        <tab heading="听众" active="'watchers'===targetTag">
+            <a usercode user-id="{{uid}}" href="/user?id={{uid}}" ng-repeat="uid in user.watchers"
+               active="'watchers'===targetTag">
+                <img class="img-rounded" style="margin:5px" width="40" height="40"
+                     ng-src='{{users[uid].isCustomLogo ? "/logo/"+users[uid].nickname : "http://www.gravatar.com/avatar/"+users[uid].logo}}'/>
+            </a>
+        </tab>
+    </tabset>
+</div>
+
+<script src="/js/marked.js"></script>
+<script src="/js/angular-file-upload-shim.min.js"></script>
+<script src="/js/angular.min.js"></script>
+<script src="/js/angular-file-upload.min.js"></script>
+<script src="/js/ui-bootstrap-tpls.min.js"></script>
+
+<script src="/js/share.js"></script>
+<script src="/js/user_page_ctrl.js"></script>
+
+<% include footer.html %>

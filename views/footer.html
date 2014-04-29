@@ -1,0 +1,64 @@
+</div>
+
+<div class="col-xs-12 col-md-3">
+
+    <div ng-show="loginUser" class="panel panel-default">
+        <div class="panel-body row">
+            <div class="col-xs-12 col-lg-4">
+                <img class="img-rounded" width="70" height="70"
+                     ng-src='{{loginUser.isCustomLogo ? "/logo/"+loginUser.nickname : "http://www.gravatar.com/avatar/"+loginUser.logo}}'/>
+            </div>
+            <div class="col-xs-12 col-lg-8">
+                <div><h4><a href="/user?id={{loginUser.id}}">{{loginUser.nickname}}</a></h4></div>
+                <div><h5>积分: {{loginUser.fraction}}</h5></div>
+            </div>
+        </div>
+    </div>
+
+    <div ng-show="!loginUser" class="panel panel-default guest-info">
+        <div class="panel-body row">
+            <div class="col-xs-12 col-lg-4">
+                <img class="img-rounded" width="70" height="70"
+                     ng-src='{{loginUser?"":"/logo/guest.jpg"}}'/>
+            </div>
+            <div class="col-xs-12 col-lg-8" ng-controller="navbar_ctrl">
+                <h4>Guest</h4>
+                <a class="btn btn-primary " ng-click="openLoginDialog()">登录</a>
+                <a class="btn btn-success btn-md" ng-click="openRegDialog()">注册</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="panel panel-info small">
+
+        <div class="panel-heading small"><i class="glyphicon glyphicon-tower"></i> Top</div>
+        <div class="panel-body">
+            <%for(var i=0,len=topList.length;i<len;i++){%>
+            <div>
+                <i class="glyphicon glyphicon-file" style="opacity: 0.2"></i> <a href="/topic?id=<%=topList[i].id%>"><%=hotList[i].title%></a>
+            </div>
+            <%}%>
+        </div>
+    </div>
+
+    <div class="panel panel-info small">
+        <div class="panel-heading"><i class="glyphicon glyphicon-fire"></i> Hot</div>
+        <div class="panel-body">
+            <%for(var i=0,len=hotList.length;i<len;i++){%>
+            <div>
+                <i class="glyphicon glyphicon-file" style="opacity: 0.2"></i> <a href="/topic?id=<%=hotList[i].id%>"><%=hotList[i].title%></a>
+            </div>
+            <%}%>
+        </div>
+    </div>
+</div>
+</div>
+
+<div class="panel panel-default">
+    <div class="panel-footer text-center">
+        <a href="/">HTML5 & Node.js中文社区</a> &copy; 2014 Powered by <a target="_blank" href="https://github.com/brighthas/forum">Forum</a>
+    </div>
+</div>
+</div>
+</body>
+</html>

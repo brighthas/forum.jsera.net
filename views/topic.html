@@ -1,0 +1,126 @@
+<% include header.html %>
+
+<div ng-controller="topic_page_ctrl" ng-init="topicId='<%=topic.id%>'">
+
+    <div class="panel panel-success" style="background: #f5f5f5;">
+
+        <div class="panel-heading">
+
+            <span ng-non-bindable><%=topic.title%></span>
+
+            <a href="" ng-click="removeTopic()"
+               ng-show="canRemoveReply('<%=topic.id%>')"
+               class="btn btn-default btn-xs pull-right">删帖</a>
+
+            <a href="#createReply" class="pull-right btn btn-default btn-xs pull-right"
+               ng-click="moveEditor('createReply')"
+               ng-show="loginUser">回帖</a>
+
+        </div>
+
+        <div class="panel-body row" style="padding: 0;margin: 0;">
+            <div class="col-sm-2 text-center" style="padding-top: 20px">
+                <img class="img-thumbnail" width="90" height="90"
+                     ng-src='{{author.isCustomLogo ? "/logo/"+author.nickname : "http://www.gravatar.com/avatar/"+author.logo}}'/>
+
+                <p><a href="/user?id={{author.id}}" usercode user-id="{{author.id}}">{{author.nickname}}</a>
+                </p>
+            </div>
+            <div class="col-sm-10" style="background: #fff;min-height: 150px">
+                <h1 ng-non-bindable><%=topic.title%></h1>
+
+                <p ng-non-bindable><%- markdown(topic.body) %></p>
+
+                <p>
+                    <span class="pull-right small" style="color: #666">{{<%=topic.createTime%> | time}}</span>
+                </p>
+            </div>
+        </div>
+        <ul class="list-group" >
+            <li class="list-group-item" ng-repeat="rid in main_reply_ids" ng-show="replys[rid]" style="background: #f5f5f5;padding: 0;">
+                <div class="row" style="margin:0;padding: 0;">
+                    <div class="col-sm-2 text-center" style="padding-top: 20px" >
+
+                        <img  class="img-thumbnail"  width="90" height="90"
+                             ng-src='{{users[replys[rid].authorId].isCustomLogo ? "/logo/"+users[replys[rid].authorId].nickname : "http://www.gravatar.com/avatar/"+users[replys[rid].authorId].logo}}'/>
+
+                        <p><a href="/user/{{replys[rid].authorId}}" usercode user-id="{{replys[rid].authorId}}">{{users[replys[rid].authorId].nickname}}</a>
+                        </p>
+                    </div>
+                    <div class="col-sm-10" id="{{rid}}" style="background: #fff;">
+                        <div style="min-height: 150px ;padding-top: 15px">
+                            <p ng-bind-html="replys[rid].body | markdown"></p>
+
+                            <ul class="list-group">
+                                <li ng-show="replys[sr]" class="list-group-item list-group-item-info"
+                                    ng-repeat="sr in sub_reply_ids_repo[rid]" id="{{sr}}">
+                                    <a usercode user-id="{{replys[sr].authorId}}"><img class="img-rounded" width="40"
+                                                                                       height="40"
+                                                                                       ng-src='{{users[replys[sr].authorId].isCustomLogo ? "/logo/"+users[replys[sr].authorId].nickname : "http://www.gravatar.com/avatar/"+users[replys[sr].authorId].logo}}'/></a>
+
+                                    <p>{{replys[sr].title}} <a href="" ng-click="moveEditor(rid,sr)">回复</a> <a href=""
+                                                                                                               ng-show="loginUser && canRemoveReply(sr)"
+                                                                                                               ng-click="removeReply(sr)">删除</a>
+                                        <span class="pull-right">{{replys[sr].createTime | time}}</span>
+                                    </p>
+
+                                    <p ng-bind-html="replys[sr].body | markdown"></p>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <div><a href="" class="btn btn-default btn-xs"
+                                ng-show="showSubMore(rid)"
+                                ng-click="moreSubReply(rid)">更多</a></div>
+                        <p class="pull-right small" >
+                            {{replys[rid].title}}
+                            <a href="" ng-show="loginUser" ng-click="moveEditor(rid)">回复</a>
+                            <a href="" ng-show="loginUser && canRemoveReply(rid)"
+                               ng-click="removeReply(rid)">删除</a>
+                            <span >{{replys[rid].createTime | time}}</span>
+                        </p>
+
+                    </div>
+                </div>
+            </li>
+
+            <li ng-show="showMainMore()" class="list-group-item"><a href=""
+                                                                                               class="btn btn-default btn-block"
+                                                                                               ng-click="moreMainReply()">
+                更多 </a></li>
+        </ul>
+        <div class="panel-footer">
+
+            <a href="" ng-click="removeTopic()" ng-show="loginUser && canRemoveTopic()"
+               class="btn btn-default btn-xs pull-right">删帖</a>
+            <a href="" ng-click="top()" ng-show="loginUser && loginUser.role === 1 && !<%=topic.top%>"
+               class="btn btn-default btn-xs pull-right">置顶</a>
+            <a href="" ng-click="untop()" ng-show="loginUser && loginUser.role === 1 && <%=topic.top%>"
+               class="btn btn-default btn-xs pull-right">取消置顶</a>
+            <a
+                    href="#createReply" class="pull-right btn btn-default btn-xs"
+                    ng-click="moveEditor('createReply')">回帖</a>
+        </div>
+    </div>
+
+    <div id="createReply" class="panel panel-default" ng-show="!editorContainerId || editorContainerId === 'createReply'">
+        <div class="panel-footer" style="padding:20px">
+            <reply-editor ng-show="true"></reply-editor>
+        </div>
+    </div>
+
+</div>
+
+<script src="/js/marked.js"></script>
+<script src="/js/angular-file-upload-shim.min.js"></script>
+<script src="/js/angular.min.js"></script>
+<script src="/js/angular-file-upload.min.js"></script>
+<script src="/js/ui-bootstrap-tpls.min.js"></script>
+
+<!-- 各页面公共功能代码 -->
+<script src="/js/share.js"></script>
+
+<!-- topic页面专用控制代码 -->
+<script src="/js/topic_page_ctrl.js"></script>
+
+<% include footer.html %>

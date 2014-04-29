@@ -1,0 +1,14 @@
+<div focus='{{tabindex}}'>
+    <div class="modal-header">
+        {{hello}}
+        <h4 class="modal-title" id="myModalLabel">更改栏目</h4>
+    </div>
+    <div class="modal-body">
+        <input type="text" placeholder="栏目名称" tabindex="1" ng-model="data.name"/>
+        <textarea ng-model="data.des" tabindex="2"></textarea>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn" ng-click="close()">Close</button>
+        <button type="button" ng-click="update()" class="btn btn-primary" tabindex="3">更改</button>
+    </div>
+</div>

@@ -1,0 +1,36 @@
+<div focus='1'>
+    <div class="modal-body">
+        <form role="form">
+            <div class="form-group">
+                <div class="alert alert-danger small" ng-show="!!titleMessage">
+                    {{titleMessage}}
+                </div>
+                <input type="text" class="form-control" ng-model="data.title" tabindex="1" placeholder="标题">
+            </div>
+            <div class="form-group">
+                <div class="alert alert-danger small" ng-show="!!passwordMessage">
+                    {{bodyMessage}}
+                </div>
+                <textarea type="text" class="form-control" ng-model="data.body" tabindex="2"
+                          placeholder="请输入内容"></textarea>
+            </div>
+            <div class="form-group">
+                <div class="alert alert-danger small" ng-show="!!validat_numMessage">
+                    {{validat_numMessage}}
+                </div>
+                <div class="row">
+                    <div class="col-sm-7">
+                        <input type="text" class="form-control" ng-model="data.validat_num" tabindex="3"
+                               placeholder="输入验证码">
+                    </div>
+                    <label class="col-sm-5 control-label"><img ng-src="/refresh_num?{{time}}"/>
+                        <a href="#" ng-click="refreshNum()"><span class="glyphicon glyphicon-repeat"></span></a></label>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-default" ng-click="close()">取消</button>
+        <button type="button" tabindex="4" class="btn btn-primary" ng-click="send()">发私信</button>
+    </div>
+</div>

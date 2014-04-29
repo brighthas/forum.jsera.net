@@ -1,0 +1,45 @@
+<% include header.html %>
+
+<div ng-controller="index_page_ctrl">
+
+
+    <div class="panel panel-success">
+        <div class="panel-heading">
+            社区板块
+            <a href="#" ng-click="openCreateDialog()" class="pull-right" ng-show="loginUser">创建栏目</a>
+        </div>
+        <ul class="list-group">
+           <% columnList.forEach(function(col,index){ %>
+
+           <li class="list-group-item" ng-init="DATA.user('<%=col.managerId%>');topicCountByColumnId('<%=col.id%>')">
+                <h4><a href="/column/<%=col.id%>"><span style="font-size: 1.2em; font-weight: bold" columnid="<%=col.id%>"
+                                                        coledit="name"><i class="glyphicon glyphicon-new-window small">
+
+                                                        </i> <%=col.name%></span></a></h4>
+               <p><%=col.des%></p>
+               版主
+               <a usercode user-id='<%=col.managerId%>' href='/user/<%=col.managerId%>'><%=managers[index] ? managers[index].username : ""%></a>
+               <%if(loginUser){%>
+               <a class="pull-right" href="" ng-click='openUpdateDialog("<%=col.id%>")' data-toggle="modal"><i
+                       class="glyphicon glyphicon-edit"></i></a>
+               <%}%>
+
+               <span>贴数：<%=topicCountList[index]%> </span>
+           </li>
+           <% }) %>
+
+        </ul>
+    </div>
+
+</div>
+
+<script src="/js/marked.js"></script>
+<script src="/js/angular-file-upload-shim.min.js"></script>
+<script src="/js/angular.min.js"></script>
+<script src="/js/angular-file-upload.min.js"></script>
+<script src="/js/ui-bootstrap-tpls.min.js"></script>
+
+<script src="/js/share.js"></script>
+<script src="/js/index_page_ctrl.js"></script>
+
+<% include footer.html %>

@@ -1,0 +1,16 @@
+<div role="form">
+    <div class="form-group">
+        <div class="alert alert-danger small" ng-show="errors.freq">
+            {{errors.freq[0]}}
+        </div>
+        <div class="alert alert-danger small" ng-show="errors.body">
+            {{errors.body[0]}}
+        </div>
+        <div editor content="body"></div>
+    </div>
+    <button type="button"
+            ng-click="createReply()"
+            class="btn btn-primary">
+        回帖
+    </button>
+</div>

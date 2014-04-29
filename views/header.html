@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html ng-app="jseraApp">
+<head>
+    <meta charset="utf-8">
+    <title><%=title%> - JSera.net </title>
+    <link rel="stylesheet" type="text/css" href="/css/bootstrap.min.css"/>
+    <style>
+        .navbar, .jumbotron {
+            margin-bottom: 0;
+        }
+
+        .breadcrumb {
+            margin: 5px 0;
+        }
+
+        .head-login{
+            display: none;
+        }
+
+        @media (min-width: 0) and (max-width: 970px) {
+            .guest-info{
+                display: none;
+            }
+            .head-login{
+                display: inline-block;
+            }
+        }
+
+
+    </style>
+</head>
+<body ng-app="jseraApp" id="appRoot">
+<div class="navbar navbar-inverse navbar-static-top" ng-controller="navbar_ctrl" role="navigation">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" ng-init="navCollapsed = true"
+                    ng-click="navCollapsed = !navCollapsed">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">JSera.net (beta)</a>
+        </div>
+        <div class="navbar-collapse collapse" ng-class="!navCollapsed && 'in'">
+
+            <ul class="nav navbar-nav navbar-right ng-cloak">
+                <li><a href="#" ng-click="openLoginDialog()" ng-show="!loginUser">登录</a></li>
+                <li><a href="#" ng-click="openRegDialog()" ng-show="!loginUser">注册</a></li>
+                <li id="userInfo" class="{{open}}">
+
+                    <a href="/user?id={{loginUser.id}}" ng-show="loginUser" ng-mouseleave="open=''" ng-mouseenter="open='open'"
+                       data-toggle="dropdown">
+                        {{loginUser.nickname || loginUser.email}}
+                        <%if(breadcrumb !== "user"){%>
+                        <b class="caret"></b>
+                        <%}%>
+                    </a>
+
+                    <%if(breadcrumb !== "user"){%>
+                    <ul class="dropdown-menu" style="min-width:103px" ng-mouseleave="open=''" ng-mouseenter="open='open'">
+                        <li><a href="/user?id={{loginUser.id}}#info">基本资料</a></li>
+                        <li><a href="/user?id={{loginUser.id}}#topics">主题帖</a></li>
+                        <li><a href="/user?id={{loginUser.id}}#replys">回帖</a></li>
+                        <li><a href="/user?id={{loginUser.id}}#messages">私信</a></li>
+                        <li><a href="/user?id={{loginUser.id}}#infos">动态</a></li>
+                        <li><a href="/user?id={{loginUser.id}}#follows">关注</a></li>
+                        <li><a href="/user?id={{loginUser.id}}#watchers">听众</a></li>
+                    </ul>
+                    <%}%>
+
+                </li>
+                <li><a href="#" ng-click="logout()" ng-show="loginUser">退出</a></li>
+            </ul>
+
+
+        </div>
+    </div>
+</div>
+
+
+<div class="container">
+    <div class="jumbotron" style="position: relative" ng-controller="navbar_ctrl">
+        <h2>HTML5 & Node.js社区</h2>
+        <p class="text-muted">专注于HTML5 Node.js 技术应用与推广</p>
+        <button ng-show="!loginUser"  ng-click="openLoginDialog()" class="btn btn-primary head-login">登录</button>
+        <button ng-show="!loginUser" ng-click="openRegDialog()" class="btn btn-success head-login">注册</button>
+
+    </div>
+
+    <div class="panel panel-default" style="margin-top: 5px ;border: 0">
+        <div class="panel-heading" style="border: 0;">
+            <div class="row" ng-mouseleave="openBreadcrumbs=''">
+                <div class="col-xs-6 col-lg-9">
+
+                    <%if(breadcrumb !== "index"){%>
+                    <span class="btn-group-sm {{openBreadcrumbs}}">
+                            <a href="/" ng-mouseenter="openBreadcrumbs='open'">
+                                <i class="glyphicon glyphicon-home"></i> 社区主页 <span class="caret"></span>
+                            </a>
+                            <ul class="dropdown-menu open" style="min-width: 100px" role="menu" ng-mouseleave="openBreadcrumbs=''"
+                                ng-mouseenter="openBreadcrumbs='open'">
+                                <%columnList.forEach(function(col){%>
+                                <li><a href="/column?id=<%=col.id%>"><%=col.name%></a></li>
+                                <%})%>
+                            </ul>
+
+                            <%if(breadcrumb === "topic"){%>
+                            / <a href="/column?id=<%=column.id%>"><%=column.name%></a> / <%=topic.title%>
+                            <%}%>
+
+                            <%if(breadcrumb === "column"){%>
+                            / <%=column.name%>
+                            <%}%>
+
+                            <%if(breadcrumb === "user"){%>
+                            / <%=user.nickname%> 个人中心
+                            <%}%>
+                    </span>
+                    <%}else{%>
+                    <i class="glyphicon glyphicon-home"></i> 社区主页
+                    <%}%>
+                </div>
+                <div class="col-xs-6 col-lg-3">
+                    <div class="row" style="padding-left: 23px;padding-right: 3px;">
+                        <form action="/topic/search" target="_blank">
+                            <input class="col-xs-9" name="keyword" style="border: 0" placeholder="站内主题搜索"/>
+                            <button type="submit" class="btn-xs btn-default" style="border: 0"><i class="glyphicon glyphicon-search"></i></button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <p class="alert small alert-warning">
+        4月-6月公测，7月1日发布beta1.0  发现BUG / 参与开发 / 意见等请到 <a target="_blank" href="https://github.com/brighthas/forum/issues">github issuse</a> 发布 。  可查看 <a href="https://github.com/brighthas/forum/wiki/ChangeLog" target="_blank">最新更新</a>
+    </p>
+    <div class="row">
+        <div class="col-xs-12 col-md-9">

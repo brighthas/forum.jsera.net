@@ -1,0 +1,92 @@
+<% include header.html %>
+
+<div class="panel panel-info" ng-controller="column_page_ctrl">
+    <div class="panel-heading"> 搜索结果 </div>
+    <ul class="list-group">
+        <% topics.forEach(function(topic,index){ %>
+        <li class="list-group-item">
+
+            <div class="row">
+                <div class="col-md-9">
+                    <div style="width: 40px;display: inline-block">
+                        <span class="label center-block" style="background: #eee;color: #888"> <%=topic.replyNum%> </span>
+                    </div>
+                    <a  href="/topic?id=<%=topic.id%>" ng-non-bindable><%=topic.title%></a>
+                </div>
+                <div class="col-md-3">
+                    <div class="pull-right">
+                        <p>
+                            <i class="small glyphicon glyphicon-user" style="opacity: .5"></i> <a ng-init="DATA.user('<%=topic.authorId%>')" usercode user-id="<%=topic.authorId%>" href="/user/<%=topics.authorId%>">
+                                <%=topicsInfo[index].topicAuthor.nickname %>
+                            </a>
+                        </p>
+
+                        <p>
+
+                            <%if(topicsInfo[index].newReply){%>
+                                <i style="opacity: .5" class="small glyphicon glyphicon-comment"></i>
+                                <a ng-init="DATA.user('<%=topicsInfo[index].replyAuthor.id%>')" usercode user-id="<%=topicsInfo[index].replyAuthor.id%>" href="/user/<%=topicsInfo[index].replyAuthor.id%>">
+                                    <%=topicsInfo[index].replyAuthor.nickname%>
+                                </a>
+                                <span style="opacity: .5">
+                                    {{<%=topicsInfo[index].newReply.createTime%> | time}}
+                                </span>
+                            <%}else{%>
+                               <i style="opacity: .5" class="small glyphicon glyphicon-user"></i><a  ng-init="DATA.user('<%=topic.authorId%>')" usercode user-id="<%=topic.authorId%>" href="/user/<%=topics.authorId%>">
+                            <%=topicsInfo[index].topicAuthor.nickname %>
+                                </a>
+                                 <span style="opacity: .5">
+                                    {{<%=topic.createTime%> | time}}
+                                </span>
+                            <%}%>
+
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+
+        </li>
+        <% }) %>
+        <li class="list-group-item">
+            <%if(topics.length){%>
+            <ul class="pagination">
+                <% var head = "/topic/search?keyword="+keyword %>
+                <%if(pager.page!==1){%>
+                <li><a href="<%=head%>">首页</a></li>
+                <li><a href="<%=head%>&page=<%=pager.page-1%>">上一页</a></li>
+                <%}%>
+
+                <% var startPage = 1+ (pager.groupNum-1)*(pager.groupMaxPageNum-1)%>
+                <%for(var j=0;startPage<pager.pagenum+1 && j<pager.groupMaxPageNum;startPage++,j++){%>
+                <% if(startPage===pager.page){%>
+                <li class="active"><a href="#" ><%=startPage%></a></li>
+                <%}else{%>
+                <li ><a href="<%=head%>&page=<%=startPage%>" ><%=startPage%></a></li>
+                <%}%>
+                <%}%>
+
+                <%if(pager.page!==pager.pagenum){%>
+                <li><a href="<%=head%>&page=<%=pager.page+1%>">下一页</a></li>
+                <li><a href="<%=head%>&page=<%=pager.pagenum%>">尾页</a></li>
+                <%}%>
+
+            </ul>
+            <%}else{%>
+                sorry，没有符合结果。
+            <%}%>
+        </li>
+
+
+</div>
+
+<script src="/js/marked.js"></script>
+<script src="/js/angular-file-upload-shim.min.js"></script>
+<script src="/js/angular.min.js"></script>
+<script src="/js/angular-file-upload.min.js"></script>
+<script src="/js/ui-bootstrap-tpls.min.js"></script>
+
+<script src="/js/share.js"></script>
+<script src="/js/column_page_ctrl.js"></script>
+
+<% include footer.html %>
