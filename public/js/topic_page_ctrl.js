@@ -11,17 +11,16 @@ app
         $scope.$watch("topicId", function (topicId) {
             if (topicId) {
 
-                query("get a column by topic's id", {id: topicId}).then(function (column) {
+                query("get a column by topic's id", [topicId]).then(function (column) {
                     $scope.column = column;
                 });
 
-                query("get a topic by id", {id: topicId}).then(function (topic) {
+                query("get a topic by id", [topicId]).then(function (topic) {
 
                     $scope.topic = topic;
                     $scope.reply_tree = topic.replyTree;
 
                     $scope.main_reply_ids = topic.replyTree.childIdsList;
-
                     function getSubIdsList(child) {
                         var rs = child.childIdsList.concat([]);
                         child.childIdsList.forEach(function (rid) {
@@ -37,7 +36,7 @@ app
 
                     $scope.moreMainReply();
 
-                    query("get a user by id", {id: topic.authorId}).then(function (author) {
+                    query("get a user by id", [topic.authorId]).then(function (author) {
                         $scope.author = author;
                     });
                 });
@@ -57,7 +56,7 @@ app
         $scope.removeReply = function (rid) {
             var bool = window.confirm("是否删除这个回复？");
             if (bool) {
-                core.call("Topic.removeReply", $scope.topicId, [rid]);
+                $http.post("/forum/topics/"+$scope.topicId+"/"+rid+"/remove");
                 delete $scope.replys[rid];
             }
         }
@@ -67,8 +66,9 @@ app
             var bool = window.confirm("是否删除这个主题？");
             if (bool) {
                 core.exec("remove a topic", {id:$scope.topicId});
+                $http.post("/forum/topics/"+$scope.topicId+"/remove");
                 setTimeout(function(){
-                    window.location.href = "/column?id="+$scope.topic.columnId;
+                    window.location.href = "/column/"+$scope.topic.columnId;
                 },1000)
             }
         }
@@ -104,7 +104,7 @@ app
 
         // 置顶该主题
         $scope.top = function () {
-            core.exec("top topic", {id: $scope.topicId});
+            $http.post("/forum/topics/"+$scope.topicId+"/top");
             $timeout(function () {
                 window.location.reload();
             }, 1000)
@@ -112,7 +112,23 @@ app
 
         // 取消置顶该主题
         $scope.untop = function () {
-            core.exec("down topic", {id: $scope.topicId});
+            $http.post("/forum/topics/"+$scope.topicId+"/untop");
+            $timeout(function () {
+                window.location.reload();
+            }, 1000)
+        }
+
+        // 加精该主题
+        $scope.fine = function () {
+            $http.post("/forum/topics/"+$scope.topicId+"/fine");
+            $timeout(function () {
+                window.location.reload();
+            }, 1000)
+        }
+
+        // 取消加精该主题
+        $scope.unfine = function () {
+            $http.post("/forum/topics/"+$scope.topicId+"/unfine");
             $timeout(function () {
                 window.location.reload();
             }, 1000)
@@ -123,16 +139,17 @@ app
             // 加载要显示的贴
             var qs = []
             for (var i = 0, len = ids.length; i < len; i++) {
-                qs.push(query("get a reply by id", {id: ids[i]}));
+                qs.push(query("get a reply by id", [ids[i]]));
             }
 
             $q.all(qs).then(function (rs) {
+
                 if (rs) {
                     for (var i = 0, len = rs.length; i < len; i++) {
                         $scope.replys[rs[i].id] = rs[i];
 
                         // 得到该回复的作者
-                        query("get a user by id", {id: rs[i].authorId}).then(function (u) {
+                        query("get a user by id", [rs[i].authorId]).then(function (u) {
                             $scope.users[u.id] = u;
                         })
                     }
@@ -198,14 +215,13 @@ app
         $scope.createReply = function () {
 
             var parentId = $scope.parentId;
-
             var data = {
                 body: $scope.body,
                 topicId: $scope.topicId,
                 parentId: $scope.parentId
             }
 
-            $http.post("/reply/create", data).success(function (result) {
+            $http.post("/forum/replys/create", data).success(function (result) {
 
                 if (result.errors) {
                     $scope.errors = result.errors;
@@ -215,7 +231,7 @@ app
                     $scope.errors = null;
                     $scope.body = "";
 
-                    var newReply = result.data && result.data.reply;
+                    var newReply = result.reply;
 
                     $scope.replys[newReply.id] = newReply;
 

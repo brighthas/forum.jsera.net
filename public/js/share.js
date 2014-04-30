@@ -241,10 +241,22 @@ var app = angular.module('jseraApp', ['ui.bootstrap', 'angularFileUpload'])
 
     .factory("query", function ($http, $q, $rootScope) {
 
-        function query(name, args) {
+        function query(name, params_) {
+
+            var params;
+            try{
+                params = JSON.stringify(params_);
+            }catch(err){}
+
             var defer = $q.defer();
-            args = args || {};
-            args.queryName = name;
+            var args = {
+                name:name
+            }
+
+            if(params){
+                args.params = params;
+            }
+
             $http.get("/query", {params: args}).success(function (rs) {
                 defer.resolve(rs);
             });

@@ -101,12 +101,12 @@
                             <ul class="dropdown-menu open" style="min-width: 100px" role="menu" ng-mouseleave="openBreadcrumbs=''"
                                 ng-mouseenter="openBreadcrumbs='open'">
                                 <%columnList.forEach(function(col){%>
-                                <li><a href="/column?id=<%=col.id%>"><%=col.name%></a></li>
+                                <li><a href="/column/<%=col.id%>"><%=col.name%></a></li>
                                 <%})%>
                             </ul>
 
                             <%if(breadcrumb === "topic"){%>
-                            / <a href="/column?id=<%=column.id%>"><%=column.name%></a> / <%=topic.title%>
+                            / <a href="/column/<%=column.id%>"><%=column.name%></a> / <%=topic.title%>
                             <%}%>
 
                             <%if(breadcrumb === "column"){%>

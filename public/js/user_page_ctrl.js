@@ -57,7 +57,7 @@ app
         // 初始化用户信息
         $scope.$watch("userId", function (uid) {
             if (uid) {
-                query("get a user by id", {id: uid}).then(function (user) {
+                query("get a user by id", [uid]).then(function (user) {
                     $scope.user = user;
                 })
             }
@@ -65,11 +65,12 @@ app
 
         // 更改用户信息
         $scope.updateUser = function () {
-            core.call("User.updateInfo", $scope.userId, [$scope.user]);
+
+            $http.post("/forum/users/" + $scope.userId + "/updateInfo", $scope.user);
         }
 
-        $scope.$watch("user.isCustomLogo",function(v){
-            if(typeof v !== "undefined"){
+        $scope.$watch("user.isCustomLogo", function (v) {
+            if (typeof v !== "undefined") {
                 $scope.updateUser();
             }
         })
@@ -86,7 +87,9 @@ app
                     }).success(function (data, status, headers, config) {
                         if (data) {
                             // 提示错误信息
-                            setTimeout( function(){alert(data);});
+                            setTimeout(function () {
+                                alert(data);
+                            });
                         } else {
                             setTimeout(function () {
                                 window.location.reload()
@@ -98,7 +101,7 @@ app
 
         // 设置用户为某个板块的管理员
         $scope.setManager = function (uid, cid) {
-            core.call("Column.setManager",cid,[uid]);
+            core.call("Column.setManager", cid, [uid]);
             setTimeout(function () {
                 window.location.reload()
             }, 1000);
@@ -106,7 +109,7 @@ app
 
         $scope.selectTopicPage = function (page) {
 
-            query("get topics by user's id",{page:page,id:$scope.userId}).then(function(rs){
+            query("get topics by user's id", [$scope.userId, page]).then(function (rs) {
                 $scope.topicTitles = rs;
             })
 
@@ -114,10 +117,10 @@ app
 
         $scope.selectReplyPage = function (page) {
 
-            query("get replys by user's id",{page:page,id:$scope.userId}).then(function(rs){
+            query("get replys by user's id", [$scope.userId, page]).then(function (rs) {
                 $scope.replys = rs;
                 for (var i = 0, len = rs.length; i < len; i++) {
-                    query("get a topic by id",{id:rs[i].topicId}).then(function (t) {
+                    query("get a topic by id", [rs[i].topicId]).then(function (t) {
                         if (t) {
                             $scope.topics[t.id] = t;
                         }
@@ -129,7 +132,7 @@ app
 
         $scope.loadTopicList = function () {
 
-            query("get topic count by user's id",{id:$scope.userId}).then(function(rs){
+            query("get topic count by user's id", [$scope.userId]).then(function (rs) {
                 $scope.bigTotalItems = rs.count;
                 $scope.bigCurrentPage = 1;
                 $scope.perPage = 10;
@@ -141,7 +144,7 @@ app
 
         $scope.loadReplyList = function () {
 
-            query("get reply count by user's id",{id:$scope.userId}).then(function(rs){
+            query("get reply count by user's id", [$scope.userId]).then(function (rs) {
                 $scope.bigTotalItems2 = rs.count;
                 $scope.bigCurrentPage2 = 1;
                 $scope.perPage2 = 10;
@@ -156,7 +159,7 @@ app
 
         $scope.loadMessageList = function () {
             messagePage += 1;
-            query("get messages by user's id",{id:$scope.userId,page:messagePage}).then(function (rs) {
+            query("get messages by user's id", [$scope.userId, messagePage]).then(function (rs) {
                 if (rs.length <= $scope.messageList.length) {
                     $scope.showMessageMoreButton = false;
                 } else {
@@ -171,7 +174,7 @@ app
 
         $scope.loadInfoList = function () {
             infoPage += 1;
-            query("get infos by user's id",{id:$scope.userId,page:infoPage}).then(function (rs) {
+            query("get infos by user's id", [$scope.userId, infoPage]).then(function (rs) {
                 if (rs.length <= $scope.infoList.length) {
                     $scope.showInfoMoreButton = false;
                 } else {

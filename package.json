@@ -17,6 +17,7 @@
     "forum": "^0.1.8",
     "consolidate": "^0.10.0",
     "q": "^1.0.1",
-    "express-session": "^1.0.4"
+    "express-session": "^1.0.4",
+    "marked": "^0.3.2"
   }
 }

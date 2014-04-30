@@ -9,7 +9,7 @@
                     <td>
                         <div style="position: relative">
                             <img class="img-rounded" style="cursor:pointer;" width="100" height="100"
-                                 ng-src='{{user.isCustomLogo ? "/logo/<%=user.nickname%>" : "http://www.gravatar.com/avatar/<%=user.logo%>"}}'/>
+                                 ng-src='{{user.isCustomLogo ? "/logo/<%=user.username%>" : "http://www.gravatar.com/avatar/<%=user.logo%>"}}'/>
                             <%if(loginUser && loginUser.id === user.id){%>
                             <i ng-show="user.isCustomLogo" class="glyphicon glyphicon-circle-arrow-up" style="cursor:pointer;font-size:2em;position: absolute; top:40px;left:35px;"></i>
                             <input tooltip-placement="left" tooltip="点击上传头像" style="cursor:pointer;position: absolute; top:50px;left:10px;filter:alpha(opacity:0);opacity: 0;" ng-show="user.isCustomLogo"  type="file" name="logo" ng-file-select="onFileSelect($files)">
@@ -33,7 +33,7 @@
                     <td>昵称</td>
                     <td>
                         <div>
-                            <p><%=user.nickname || ""%></p>
+                            <p><%=user.username || ""%></p>
 
                             <div ng-show="userId !== loginUser.id">
                                 <i class="glyphicon glyphicon-envelope"></i>
@@ -184,14 +184,14 @@
         <tab heading="关注" active="'follows'===targetTag">
             <a usercode user-id="{{uid}}" href="/user?id={{uid}}" ng-repeat="uid in user.follows">
                 <img class="img-rounded" style="margin: 5px;" width="40" height="40"
-                     ng-src='{{users[uid].isCustomLogo ? "/logo/"+users[uid].nickname : "http://www.gravatar.com/avatar/"+users[uid].logo}}'/>
+                     ng-src='{{users[uid].isCustomLogo ? "/logo/"+users[uid].username : "http://www.gravatar.com/avatar/"+users[uid].logo}}'/>
             </a>
         </tab>
         <tab heading="听众" active="'watchers'===targetTag">
             <a usercode user-id="{{uid}}" href="/user?id={{uid}}" ng-repeat="uid in user.watchers"
                active="'watchers'===targetTag">
                 <img class="img-rounded" style="margin:5px" width="40" height="40"
-                     ng-src='{{users[uid].isCustomLogo ? "/logo/"+users[uid].nickname : "http://www.gravatar.com/avatar/"+users[uid].logo}}'/>
+                     ng-src='{{users[uid].isCustomLogo ? "/logo/"+users[uid].username : "http://www.gravatar.com/avatar/"+users[uid].logo}}'/>
             </a>
         </tab>
     </tabset>

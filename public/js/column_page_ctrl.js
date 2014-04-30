@@ -4,7 +4,7 @@ app.controller("column_page_ctrl", function ($scope, $http, $rootScope, core) {
 
         core.exec("create a topic", {})
 
-        $http.post("/topic/create", {
+        $http.post("/forum/topics/create", {
             title: $scope.title,
             body: $scope.body,
             validat_num: $scope.validat_num,
