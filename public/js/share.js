@@ -83,13 +83,14 @@ var app = angular.module('jseraApp', ['ui.bootstrap', 'angularFileUpload'])
                 }
 
                 scope.follow = function () {
-                    core.call("User.follow", $rootScope.loginUser.id, [userId]);
+                    $http.post("/forum/users/"+$rootScope.loginUser.id+"/follow",{userId:userId});
                     $rootScope.loginUser.follows.push(userId);
                 }
 
                 scope.unfollow = function () {
                     this.showcode = false;
-                    core.call("User.unfollow", $rootScope.loginUser.id, [userId]);
+
+                    $http.post("/forum/users/"+$rootScope.loginUser.id+"/unfollow",{userId:userId});
                     $timeout(function () {
                         for (var i = 0, len = $rootScope.loginUser.follows.length; i < len; i++) {
                             if (scope.userId === scope.loginUser.follows[i]) {
@@ -108,6 +109,7 @@ var app = angular.module('jseraApp', ['ui.bootstrap', 'angularFileUpload'])
                 })
 
                 scope.$watch("userId", function (_userId) {
+
                     if (_userId) {
 
                         userId = _userId;
@@ -115,7 +117,7 @@ var app = angular.module('jseraApp', ['ui.bootstrap', 'angularFileUpload'])
                         scope.user = $rootScope.users[userId];
 
                         if (!scope.user) {
-                            query("get a user by id", {id: userId}).then(function (u) {
+                            query("get a user by id",[userId]).then(function (u) {
 
                                 if (u) {
                                     scope.user = u;

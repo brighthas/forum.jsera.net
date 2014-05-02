@@ -4,10 +4,10 @@
             <div class="row">
                 <div class="col-xs-4">
                     <img class="img-rounded" width="50" height="50"
-                         ng-src='{{user.isCustomLogo ? "/logo/"+user.username : "http://www.gravatar.com/avatar/"+user.logo}}'/>
+                         ng-src='{{(user.isCustomLogo && user.username) ? "http://jsera.qiniudn.com/logo/"+user.username+"?ttt&imageView2/1/w/100/h/100" : "http://www.gravatar.com/avatar/"+user.logo}}' />
                 </div>
                 <div class="col-xs-8">
-                    <p><a href="/user?id={{user.id}}">{{user.username}}</a></p>
+                    <p><a href="/user/{{user.id}}">{{user.username}}</a></p>
 
                     <p>{{user.fraction}}</p>
                 </div>

@@ -21,7 +21,7 @@
         <div class="panel-body row" style="padding: 0;margin: 0;">
             <div class="col-sm-2 text-center" style="padding-top: 20px">
                 <img class="img-thumbnail" width="90" height="90"
-                     ng-src='{{author.isCustomLogo ? "/logo/"+author.username : "http://www.gravatar.com/avatar/"+author.logo}}'/>
+                     ng-src='{{author.isCustomLogo ? "http://jsera.qiniudn.com/logo/"+author.username+"?ttt&imageView2/1/w/100/h/100" : "http://www.gravatar.com/avatar/"+author.logo}}'/>
 
                 <p><a href="/user/{{author.id}}" usercode user-id="{{author.id}}">{{author.username}}</a>
                 </p>
@@ -42,7 +42,7 @@
                     <div class="col-sm-2 text-center" style="padding-top: 20px" >
 
                         <img  class="img-thumbnail"  width="90" height="90"
-                             ng-src='{{users[replys[rid].authorId].isCustomLogo ? "/logo/"+users[replys[rid].authorId].username : "http://www.gravatar.com/avatar/"+users[replys[rid].authorId].logo}}'/>
+                             ng-src='{{users[replys[rid].authorId].isCustomLogo ? "http://jsera.qiniudn.com/logo/"+users[replys[rid].authorId].username+"?ttt&imageView2/1/w/100/h/100" : "http://www.gravatar.com/avatar/"+users[replys[rid].authorId].logo}}'/>
 
                         <p><a href="/user/{{replys[rid].authorId}}" usercode user-id="{{replys[rid].authorId}}">{{users[replys[rid].authorId].username}}</a>
                         </p>
@@ -56,7 +56,7 @@
                                     ng-repeat="sr in sub_reply_ids_repo[rid]" id="{{sr}}">
                                     <a usercode user-id="{{replys[sr].authorId}}"><img class="img-rounded" width="40"
                                                                                        height="40"
-                                                                                       ng-src='{{users[replys[sr].authorId].isCustomLogo ? "/logo/"+users[replys[sr].authorId].username : "http://www.gravatar.com/avatar/"+users[replys[sr].authorId].logo}}'/></a>
+                                                                                       ng-src='{{users[replys[sr].authorId].isCustomLogo ? "http://jsera.qiniudn.com/logo/"+users[replys[sr].authorId].username+"?ttt&imageView2/1/w/100/h/100" : "http://www.gravatar.com/avatar/"+users[replys[sr].authorId].logo}}'/></a>
 
                                     <p>{{replys[sr].title}} <a href="" ng-click="moveEditor(rid,sr)">回复</a> <a href=""
                                                                                                                ng-show="loginUser && canRemoveReply(sr)"
@@ -93,13 +93,14 @@
 
             <a href="" ng-click="removeTopic()" ng-show="loginUser && canRemoveTopic()"
                class="btn btn-default btn-xs pull-right">删帖</a>
-            <a href="" ng-click="top()" ng-show="loginUser && loginUser.email === brighthas@gmail.com && !<%=topic.top%>"
+            <a href="" ng-click="top()"
+               ng-show="loginUser && loginUser.email === 'brighthas@gmail.com' && !<%=topic.top%>"
                class="btn btn-default btn-xs pull-right">置顶</a>
-            <a href="" ng-click="untop()" ng-show="loginUser && loginUser.email === brighthas@gmail.com && <%=topic.top%>"
+            <a href="" ng-click="untop()" ng-show="loginUser && loginUser.email === 'brighthas@gmail.com' && <%=topic.top%>"
                class="btn btn-default btn-xs pull-right">取消置顶</a>
-            <a href="" ng-click="fine()" ng-show="loginUser && loginUser.email === brighthas@gmail.com && !<%=topic.top%>"
+            <a href="" ng-click="fine()" ng-show="loginUser && loginUser.email === 'brighthas@gmail.com' && !<%=topic.top%>"
                class="btn btn-default btn-xs pull-right">加精</a>
-            <a href="" ng-click="unfine()" ng-show="loginUser && loginUser.email === brighthas@gmail.com && <%=topic.top%>"
+            <a href="" ng-click="unfine()" ng-show="loginUser && loginUser.email === 'brighthas@gmail.com' && <%=topic.top%>"
                class="btn btn-default btn-xs pull-right">取消加精</a>
             <a
                     href="#createReply" class="pull-right btn btn-default btn-xs"

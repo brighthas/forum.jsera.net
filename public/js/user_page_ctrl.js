@@ -1,6 +1,9 @@
 app
+    .factory("token",function($http){
+        return $http.get("/token");
+    })
     .controller("userCtrl",
-    function ($modal, $rootScope, $scope, $http, $timeout, $upload, $tooltip, $sce, core, query) {
+    function ($modal, $rootScope, $scope, $http, $timeout, $upload, $tooltip, $sce, core, query,token) {
 
         $scope.targetTag = window.location.hash;
         if ($scope.targetTag) {
@@ -75,17 +78,23 @@ app
             }
         })
 
+        var tok;
+
+        token.then(function(t){
+            tok = t.data;
+        })
+
         // 上传用户头像
         $scope.onFileSelect = function ($files) {
             for (var i = 0; i < $files.length; i++) {
                 var file = $files[i];
                 $scope.upload = $upload.upload({
-                    url: '/user/update_logo',
-                    data: {myObj: $scope.myModelObj},
+                    url: 'http://up.qiniu.com/',
+                    data: {myObj: $scope.myModelObj,token:tok,key:"logo/"+$scope.user.username},
                     file: file
                 }).progress(function (evt) {
                     }).success(function (data, status, headers, config) {
-                        if (data) {
+                        if (data.errors) {
                             // 提示错误信息
                             setTimeout(function () {
                                 alert(data);
@@ -101,7 +110,7 @@ app
 
         // 设置用户为某个板块的管理员
         $scope.setManager = function (uid, cid) {
-            core.call("Column.setManager", cid, [uid]);
+            $http.post("/forum/columns/"+cid+"/setManager",{managerId:uid});
             setTimeout(function () {
                 window.location.reload()
             }, 1000);

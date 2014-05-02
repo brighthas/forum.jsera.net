@@ -1,6 +1,8 @@
-var forum = require("../forum");
-var identity = require("../identity")();
-var captcha = require("../captcha");
+var qiniu = require("./qiniu");
+
+var forum = require("forum");
+var identity = require("identity")();
+var captcha = require("captcha");
 var markdown = require("marked");
 
 identity.domain.on("User.*.create", function (data) {
@@ -169,7 +171,7 @@ app.get("/column/:id/:page?", share_data, loginUser, function (req, res) {
             res.locals.title = column.name;
             res.locals.topics = topics;
 
-            res.locals.pager = Pager(count, parseInt(req.query.page) || 1, 10);
+            res.locals.pager = Pager(count, parseInt(req.params.page) || 1, 10);
 
             var topicInfosArr = [];
 
@@ -228,9 +230,48 @@ app.get("/user/:id", share_data, loginUser, function (req, res) {
     })
 })
 
-app.get("/search", function (req, res) {
+app.get("/search", share_data,function (req, res) {
 
-    res.render("search");
+    if (req.query.keyword) {
+        Q.all([
+                query["search topics by keyword"](req.query.keyword, req.query.page),
+                query["search topics count by keyword"](req.query.keyword)])
+            .spread(function (topics, count) {
+
+
+                res.locals.breadcrumb = "search";
+                res.locals.title = "搜索关键词: " + req.query.keyword;
+                res.locals.keyword = req.query.keyword;
+                res.locals.topics = topics;
+                res.locals.pager = Pager(count, parseInt(req.query.page) || 1, 10);
+
+                var topicInfosArr = [];
+
+                topics.forEach(function (topic) {
+                    topicInfosArr.push(topicInfo(topic));
+                });
+
+                Q.all(topicInfosArr).then(function (rs) {
+                    res.locals.topicsInfo = rs;
+                    res.render("search");
+                })
+
+            })
+    } else {
+        res.send(404);
+    }
+
+
+})
+
+app.get("/token",  function(req,res){
+    if(req.session.user){
+        var putPolicy = new qiniu.rs.PutPolicy("jsera:logo/"+req.session.user.username);
+        putPolicy.asyncOps  = "imageView2/2/w/200";
+        res.send(putPolicy.token());
+    }else{
+        res.send();
+    }
 })
 
 app.get("/query", function (req, res) {

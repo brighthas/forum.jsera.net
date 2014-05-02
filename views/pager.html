@@ -1,8 +1,8 @@
 <ul class="pagination pagination-sm">
 
     <%if(pager.page!==1){%>
-    <li><a href="/column?id=<%=column.id%>">首页</a></li>
-    <li><a href="/column?id=<%=column.id%>&page=<%=pager.page-1%>">上一页</a></li>
+    <li><a href="/column/<%=column.id%>">首页</a></li>
+    <li><a href="/column/<%=column.id%>/<%=pager.page-1%>">上一页</a></li>
     <%}%>
 
     <% var startPage = 1+ (pager.groupNum-1)*(pager.groupMaxPageNum-1)%>
@@ -10,13 +10,13 @@
     <% if(startPage===pager.page){%>
     <li class="active"><a href="#" ><%=startPage%></a></li>
     <%}else{%>
-    <li ><a href="/column?id=<%=column.id%>&page=<%=startPage%>" ><%=startPage%></a></li>
+    <li ><a href="/column/<%=column.id%>/<%=startPage%>" ><%=startPage%></a></li>
     <%}%>
     <%}%>
 
     <%if(pager.page!==pager.pagenum){%>
-    <li><a href="/column?id=<%=column.id%>&page=<%=pager.page+1%>">下一页</a></li>
-    <li><a href="/column?id=<%=column.id%>&page=<%=pager.pagenum%>">尾页</a></li>
+    <li><a href="/column/<%=column.id%>/<%=pager.page+1%>">下一页</a></li>
+    <li><a href="/column/<%=column.id%>/<%=pager.pagenum%>">尾页</a></li>
     <%}%>
 
 </ul>

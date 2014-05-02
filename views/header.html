@@ -49,9 +49,9 @@
                 <li><a href="#" ng-click="openRegDialog()" ng-show="!loginUser">注册</a></li>
                 <li id="userInfo" class="{{open}}">
 
-                    <a href="/user?id={{loginUser.id}}" ng-show="loginUser" ng-mouseleave="open=''" ng-mouseenter="open='open'"
+                    <a href="/user/{{loginUser.id}}" ng-show="loginUser" ng-mouseleave="open=''" ng-mouseenter="open='open'"
                        data-toggle="dropdown">
-                        {{loginUser.nickname || loginUser.email}}
+                        {{loginUser.username || loginUser.email}}
                         <%if(breadcrumb !== "user"){%>
                         <b class="caret"></b>
                         <%}%>
@@ -114,7 +114,7 @@
                             <%}%>
 
                             <%if(breadcrumb === "user"){%>
-                            / <%=user.nickname%> 个人中心
+                            / <%=user.username%> 个人中心
                             <%}%>
                     </span>
                     <%}else{%>
@@ -123,7 +123,7 @@
                 </div>
                 <div class="col-xs-6 col-lg-3">
                     <div class="row" style="padding-left: 23px;padding-right: 3px;">
-                        <form action="/topic/search" target="_blank">
+                        <form action="/search" target="_blank">
                             <input class="col-xs-9" name="keyword" style="border: 0" placeholder="站内主题搜索"/>
                             <button type="submit" class="btn-xs btn-default" style="border: 0"><i class="glyphicon glyphicon-search"></i></button>
                         </form>

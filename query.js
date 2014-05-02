@@ -244,6 +244,28 @@ var query = {
             })
 
         return defer.promise;
+    },
+    "search topics by keyword":function(keyword,page){
+        var defer = Q.defer();
+        page = parseInt(page) || 1;
+        var db = dbs.getDB("Topic");
+        db.find({"$or":[{title:/.*keyword.*/},{body:/.*keyword.*/}]})
+            .sort({createTime: -1})
+            .limit(10)
+            .skip((page - 1) * 10)
+            .toArray(function (err, rs) {
+                defer.resolve(rs || []);
+            })
+
+        return defer.promise;
+    },
+    "search topics count by keyword":function(keyword){
+        var defer = Q.defer();
+        var db = dbs.getDB("Topic");
+        db.count({"$or":[{title:/.*keyword.*/},{body:/.*keyword.*/}]},function(err,count){
+            defer.resolve(count);
+        })
+        return defer.promise;
     }
 
 }

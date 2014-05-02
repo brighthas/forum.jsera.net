@@ -9,7 +9,7 @@
                     <td>
                         <div style="position: relative">
                             <img class="img-rounded" style="cursor:pointer;" width="100" height="100"
-                                 ng-src='{{user.isCustomLogo ? "/logo/<%=user.username%>" : "http://www.gravatar.com/avatar/<%=user.logo%>"}}'/>
+                                 ng-src='{{(user.isCustomLogo && user.username) ? "http://jsera.qiniudn.com/logo/"+user.username+"?ttt&imageView2/1/w/100/h/100" : "http://www.gravatar.com/avatar/<%=user.logo%>"}}'/>
                             <%if(loginUser && loginUser.id === user.id){%>
                             <i ng-show="user.isCustomLogo" class="glyphicon glyphicon-circle-arrow-up" style="cursor:pointer;font-size:2em;position: absolute; top:40px;left:35px;"></i>
                             <input tooltip-placement="left" tooltip="点击上传头像" style="cursor:pointer;position: absolute; top:50px;left:10px;filter:alpha(opacity:0);opacity: 0;" ng-show="user.isCustomLogo"  type="file" name="logo" ng-file-select="onFileSelect($files)">
@@ -97,21 +97,16 @@
                 </tr>
                 <tr>
 
-                    <td>身份</td>
+                    <td></td>
 
                     <td>
-                        <%if(user.role === 0){%>
-                        用户
-                        <%}%>
-                        <%if(user.role === 1){%>
-                        终极管理员
-                        <%}%>
+
 
                         <%columnList.forEach(function(col){%>
                         <%if(col.managerId === user.id){%>
                         <p><strong><%=col.name%></strong>版主</p>
                         <%}else{%>
-                        <p ng-show="loginUser.role === 1 && loginUser.id !== userId">
+                        <p ng-show="loginUser.email === 'brighthas@gmail.com' && loginUser.id !== userId">
                             <string><%=col.name%></string>
                             <a href="" ng-click="setManager('<%=user.id%>','<%=col.id%>')">设置管理员</a></p>
                         <%}%>
@@ -138,7 +133,7 @@
         <tab heading="主题帖" select="loadTopicList()" active="'topics'===targetTag">
             <ul class="list-group">
                 <li ng-repeat=" t in topicTitles" class="list-group-item">
-                    <a href="/topic?id={{t.id}}">{{t.title}}</a>
+                    <a href="/topic/{{t.id}}">{{t.title}}</a>
                 </li>
                 <li class="list-group-item">
                     <pagination on-select-page="selectTopicPage(page)" total-items="bigTotalItems" page="bigCurrentPage"
@@ -150,7 +145,7 @@
         <tab heading="回复帖" select="loadReplyList()" active="'replys'===targetTag">
             <ul class="list-group">
                 <li ng-repeat=" r in replys" class="list-group-item">
-                    <a href="/topic?id={{r.topicId}}#{{r.id}}">回复：{{topics[r.topicId].title}}</a>
+                    <a href="/topic/{{r.topicId}}#{{r.id}}">回复：{{topics[r.topicId].title}}</a>
                 </li>
                 <li class="list-group-item">
                     <pagination on-select-page="selectReplyPage(page)" total-items="bigTotalItems2"
@@ -182,16 +177,16 @@
         </tab>
         <%}%>
         <tab heading="关注" active="'follows'===targetTag">
-            <a usercode user-id="{{uid}}" href="/user?id={{uid}}" ng-repeat="uid in user.follows">
-                <img class="img-rounded" style="margin: 5px;" width="40" height="40"
-                     ng-src='{{users[uid].isCustomLogo ? "/logo/"+users[uid].username : "http://www.gravatar.com/avatar/"+users[uid].logo}}'/>
+            <a usercode user-id="{{uid}}" href="/user/{{uid}}" ng-repeat="uid in user.follows">
+                <img class="img-rounded" style="cursor:pointer;" width="50" height="50"
+                     ng-src='{{(users[uid].isCustomLogo && user.username) ? "http://jsera.qiniudn.com/logo/"+users[uid].username+"?ttt&imageView2/1/w/100/h/100" : "http://www.gravatar.com/avatar/"+users[uid].logo}}'/>
             </a>
         </tab>
         <tab heading="听众" active="'watchers'===targetTag">
-            <a usercode user-id="{{uid}}" href="/user?id={{uid}}" ng-repeat="uid in user.watchers"
+            <a usercode user-id="{{uid}}" href="/user/{{uid}}" ng-repeat="uid in user.watchers"
                active="'watchers'===targetTag">
-                <img class="img-rounded" style="margin:5px" width="40" height="40"
-                     ng-src='{{users[uid].isCustomLogo ? "/logo/"+users[uid].username : "http://www.gravatar.com/avatar/"+users[uid].logo}}'/>
+                <img class="img-rounded" style="cursor:pointer;" width="50" height="50"
+                     ng-src='{{(users[uid].isCustomLogo && user.username) ? "http://jsera.qiniudn.com/logo/"+users[uid].username+"?ttt&imageView2/1/w/100/h/100" : "http://www.gravatar.com/avatar/"+users[uid].logo}}'/>
             </a>
         </tab>
     </tabset>
