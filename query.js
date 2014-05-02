@@ -1,4 +1,4 @@
-var dbs = require("../forum").dbs;
+var dbs = require("forum").dbs;
 var Q = require("q");
 
 var query = {
